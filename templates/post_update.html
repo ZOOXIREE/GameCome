@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Изменение комментария</h1>
+    <form method="POST">
+        <textarea name="text" rows="5" cols="50">{{ comment.text }}</textarea><br>
+        {% if current_user.is_authenticated and current_user == comment.author %}
+            <input type="submit" value="Изменить комментарий">
+        {% else %}
+            <p>Вы не можете изменить этот комментарий.</p>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

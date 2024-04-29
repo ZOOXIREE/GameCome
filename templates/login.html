@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container mt-5">
+    {% if current_user.is_authenticated %}
+    <h1>Привет, {{ current_user.fullname }}!</h1>
+    <p>Вы успешно вошли в систему.</p>
+    <a href="/logout" class="btn btn-primary">Выйти</a>
+    {% else %}
+    <h1 style="color: white;">Вход</h1>
+    <form action="/login" method="POST">
+        <div class="mb-3">
+            <label for="username" class="form-label">Имя пользователя:</label>
+            <input type="text" id="username" name="username" class="form-control" style="width: 400px;" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Пароль:</label>
+            <input type="password" id="password" name="password" class="form-control" style="width: 400px;" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+    {% if error %}
+    <div class="alert alert-danger mt-3" role="alert">
+        Неправильный логин или пароль.
+    </div>
+    {% endif %}
+    <div class="text-center mt-3">
+        <a href="/register">Ещё не зарегистрированы?</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+.long-title {
+    word-wrap: break-word;
+}
+.hidden-navbar {
+    display: none;
+}
+
+.input-style {
+    color: white;
+    background-color: black;
+}
+
+.form-submit {
+    color: white;
+    background-color: black;
+}
+
+.form-label {
+    color: white;
+}
+
+.message-success {
+    color: green;
+    border: 1px solid green;
+}
+
+.message-error {
+    color: red;
+    border: 1px solid red;
+}
+
+.message-frame {
+    background-color: #013220;
+    padding: 10px;
+    margin-top: 10px;
+    display: none; /* Изначально скрыт */
+    border-radius: 8px;
+}
+
+

@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Добавить комментарий
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5" style="color: white;">
+    <h1>Добавление комментария</h1>
+    <!-- Форма для поиска игр -->
+    <form id="search_form" onsubmit="searchGames(); return false;">
+        <label for="search_game_name" class="form-label">Введите название игры:</label><br>
+        <input type="text" id="search_game_name" name="game_name" required class="input-style" aria-label="Введите название игры">
+        <input type="submit" value="Найти" class="form-submit">
+    </form>
+
+    <br>
+
+    <!-- Форма для добавления комментария -->
+    <!-- Форма для добавления комментария -->
+<form id="add_comment_form" method="POST" action="{{ url_for('add_comment') }}" onsubmit="return false;">
+    <label for="game" class="form-label">Выберите игру:</label><br>
+    <select id="game" name="game" required class="input-style" aria-label="Выберите игру из списка">
+        {% for game in games %}
+        <option value="{{ game.id }}">{{ game.name }}</option>
+        {% endfor %}
+    </select><br>
+    <label for="text" class="form-label">Текст комментария:</label><br>
+    <textarea id="text" name="text" rows="4" cols="50" required class="input-style" aria-label="Введите ваш комментарий здесь"></textarea><br>
+    <!-- Радиокнопки для рекомендации -->
+    <div class="radio-table">
+        <div class="radio-row">
+            <div class="radio-option">
+                <input type="radio" id="recommend" name="recommendation" value="recommend" required>
+                <label for="recommend">Рекомендую</label>
+            </div>
+            <div class="radio-option">
+                <input type="radio" id="do_not_recommend" name="recommendation" value="do_not_recommend">
+                <label for="do_not_recommend">Не рекомендую</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Перемещенная кнопка "Отправить" внутрь формы -->
+    <div style="margin-top: 10px;">
+        <button type="submit" class="form-submit">Отправить</button>
+    </div>
+</form>
+
+
+    <!-- Место для сообщений об ошибке или успехе -->
+    <div id="messages" class="messages-container" style="display: none;"></div>
+
+</div>
+
+<style>
+.messages-container {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    width: auto;
+}
+.alert {
+    display: table;
+    padding: 5px 10px;
+    margin: 5px 0;
+}
+.success-message {
+    background-color: darkgreen;
+    color: white;
+}
+.error-message {
+    background-color: #640000;
+    color: white;
+}
+
+/* Скрыть оригинальные радиокнопки */
+input[type="radio"] {
+  display: none;
+}
+
+/* Стилизация таблицы радиокнопок */
+.radio-table {
+  display: table;
+}
+
+.radio-row {
+  display: table-row;
+}
+
+.radio-option {
+  display: table-cell;
+  padding: 5px;
+  border: 1px solid #ccc; /* Граница вокруг радиокнопок */
+  position: relative;
+}
+
+/* Создание эффекта подсветки текста при наведении */
+.radio-option label::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  z-index: -1;
+  transition: background-color 0.3s;
+}
+
+/* Подсветка текста "Рекомендую" при наведении */
+#recommend:checked + label::after {
+  background-color: #0a5a0a; /* Зеленый цвет подсветки при выборе */
+}
+
+/* Подсветка текста "Не рекомендую" красным цветом при наведении */
+#do_not_recommend:checked + label::after {
+  background-color: #640000; /* Красный цвет подсветки при выборе */
+}
+</style>
+
+<script>
+function searchGames() {
+    var gameName = document.getElementById('search_game_name').value.trim().toLowerCase();
+    fetch('{{ url_for("api_search_games") }}?game_name=' + encodeURIComponent(gameName))
+    .then(response => response.json())
+    .then(data => {
+        const select = document.getElementById('game');
+        select.innerHTML = '';
+        if (data.length === 0) {
+            select.innerHTML = '<option>Игры не найдены</option>';
+        } else {
+            data.forEach(game => {
+                const option = document.createElement('option');
+                option.value = game.id;
+                option.textContent = game.name;
+                select.appendChild(option);
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching games:', error);
+    });
+}
+
+document.getElementById('add_comment_form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    fetch('{{ url_for("add_comment") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        const messages = document.getElementById('messages');
+        messages.style.display = 'block'; // Показываем блок сообщений
+        messages.innerHTML = ''; // Очищаем предыдущие сообщения
+
+        if (data.success) {
+            messages.innerHTML += `<div class="alert success-message">${data.message}</div>`;
+        } else {
+            messages.innerHTML += `<div class="alert error-message">${data.error}</div>`;
+        }
+    })
+    .catch(error => {
+        const messages = document.getElementById('messages');
+        messages.style.display = 'block';
+        messages.innerHTML = `<div class="alert error-message">Ошибка запроса: ${error}</div>`;
+    });
+});
+</script>
+
+{% endblock %}

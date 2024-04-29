@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Регистрация
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 style="color: white;">Регистрация</h1>
+    <form action="/register" method="POST">
+         <div class="mb-3">
+            <label for="fullname" class="form-label">Имя аккаунта:</label>
+            <input type="text" id="fullname" name="fullname" class="form-control" style="width: 400px;" required>
+        </div>
+        <div class="mb-3">
+            <label for="username" class="form-label">Логин:</label>
+            <input type="text" id="username" name="username" class="form-control" style="width: 400px;" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Пароль:</label>
+            <input type="password" id="password" name="password" class="form-control"  style="width: 400px;" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    </form>
+</div>
+{% endblock %}
